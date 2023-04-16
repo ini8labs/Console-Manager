@@ -2,19 +2,15 @@ package server
 
 import (
 	"context"
-	"flag"
 	"github.com/gin-gonic/gin"
+	"github.com/ini8labs/console-manager/src/console"
+	"github.com/ini8labs/console-manager/src/middlewares"
 	"github.com/sirupsen/logrus"
+	"k8s.io/client-go/rest"
 	"net/http"
-	"path/filepath"
 	//"github.com/google/martian/log"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/util/homedir"
-
-	"github.com/ini8labs/console-manager/src/console"
-	"github.com/ini8labs/console-manager/src/middlewares"
 )
 
 type Server struct {
@@ -23,16 +19,17 @@ type Server struct {
 }
 
 func initServer(logger *logrus.Logger) Server {
-	var kubeconfig *string
-	if home := homedir.HomeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-	}
-	flag.Parse()
+	config, err := rest.InClusterConfig()
+	//var kubeconfig *string
+	//if home := homedir.HomeDir(); home != "" {
+	//	kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+	//} else {
+	//	kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+	//}
+	//flag.Parse()
 
 	// use the current context in kubeconfig
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	//config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console-manager
+  namespace: eks-console-shell-operator-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      serviceAccountName: eks-console-shell-operator-controller-manager
+      containers:
+        - name: myapp
+          image: aotala/console-manager:v0.0.1
+          ports:
+            - containerPort: 8080
