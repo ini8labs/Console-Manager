@@ -13,9 +13,9 @@ spec:
       labels:
         app: myapp
     spec:
-      serviceAccountName: eks-console-shell-operator-controller-manager
+#      serviceAccountName: eks-console-shell-operator-controller-manager
       containers:
         - name: myapp
-          image: aotala/console-manager:v0.0.1
+          image: aotala/console-manager:v0.0.3
           ports:
             - containerPort: 8080

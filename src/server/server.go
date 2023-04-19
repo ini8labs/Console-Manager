@@ -59,7 +59,7 @@ func NewServer(addr string, logger *logrus.Logger) error {
 
 	r.Use(middlewares.LoggingMiddleware())
 
-	r.POST("/createconsole/k8s", s.createEKSConsole)
+	r.GET("/createconsole/k8s", s.createEKSConsole)
 	r.GET("/getconsole/k8s", s.getEKSConsole)
 	r.DELETE("/deleteconsole/k8s", s.deleteEKSConsole)
 
@@ -80,7 +80,7 @@ func (s Server) createEKSConsole(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, "object created Successfully")
+	c.JSON(http.StatusOK, "object created Successfully")
 }
 
 func (s Server) getEKSConsole(c *gin.Context) {
