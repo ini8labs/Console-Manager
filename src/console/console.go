@@ -27,8 +27,7 @@ func (c *Console) Create(ctx context.Context, namespace string, obj *unstructure
 	_, err := c.Resource(EksConsoleGVR).Namespace(namespace).
 		Create(ctx, obj, metav1.CreateOptions{})
 	if err != nil {
-		c.WithFields(
-			logrus.Fields{})
+		c.Logger.Errorf("error creating the EKSConsole object.")
 		return err
 	}
 	return nil
