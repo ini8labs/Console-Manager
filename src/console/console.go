@@ -2,7 +2,6 @@ package console
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -38,15 +37,16 @@ func (c *Console) Delete(ctx context.Context, namespacedName types.NamespacedNam
 		Delete(ctx, namespacedName.Name, metav1.DeleteOptions{})
 }
 
-func (c *Console) Get(ctx context.Context, namespacedName types.NamespacedName) error {
+func (c *Console) Get(ctx context.Context, namespacedName types.NamespacedName) (*unstructured.Unstructured, error) {
 	obj, err := c.Resource(EksConsoleGVR).Namespace(namespacedName.Namespace).
 		Get(ctx, namespacedName.Name, metav1.GetOptions{})
 	if err != nil {
 		c.Logger.Error("error fetching the Resource")
-		return err
+
+		return nil, err
 	}
-	fmt.Println(obj.GetName())
-	return nil
+
+	return obj, nil
 }
 
 func (c *Console) Update() error {

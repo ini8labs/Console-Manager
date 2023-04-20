@@ -94,7 +94,7 @@ func (s Server) getEKSConsole(c *gin.Context) {
 		Name:      appName,
 	}
 
-	if err := s.Get(context.TODO(), namespacedName); err != nil {
+	if _, err := s.Get(context.TODO(), namespacedName); err != nil {
 		s.Errorf(err.Error())
 		c.JSON(http.StatusInternalServerError, "Some internal error")
 		return
