@@ -43,7 +43,7 @@ func (c *Console) Get(ctx context.Context, namespacedName types.NamespacedName) 
 	obj, err := c.Resource(EksConsoleGVR).Namespace(namespacedName.Namespace).
 		Get(ctx, namespacedName.Name, metav1.GetOptions{})
 	if err != nil {
-		fmt.Println(err.Error())
+		c.Logger.Error("error fetching the Resource")
 		return err
 	}
 	fmt.Println(obj.GetName())
