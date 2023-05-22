@@ -48,7 +48,3 @@ func (c *Console) Get(ctx context.Context, namespacedName types.NamespacedName) 
 
 	return obj, nil
 }
-
-func (c *Console) Update() error {
-	return nil
-}

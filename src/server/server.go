@@ -8,7 +8,10 @@ import (
 	"github.com/ini8labs/console-manager/src/console"
 	"github.com/ini8labs/console-manager/src/middlewares"
 	"github.com/sirupsen/logrus"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/util/json"
 	"k8s.io/client-go/rest"
+	_ "k8s.io/client-go/rest"
 
 	//"github.com/google/martian/log"
 	"k8s.io/apimachinery/pkg/types"
@@ -22,7 +25,7 @@ type Server struct {
 
 func initServer(logger *logrus.Logger) Server {
 	config, err := rest.InClusterConfig()
-	//var kubeconfig *string
+	// var kubeconfig *string
 	//if home := homedir.HomeDir(); home != "" {
 	//	kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
 	//} else {
@@ -76,6 +79,13 @@ func (s Server) createEKSConsole(c *gin.Context) {
 	labels := c.Query("labels")
 
 	obj := console.BuildEKSConsoleObj(appName, labels)
+
+	if err := s.logNewObject(obj, namespace); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		s.Errorf(err.Error())
+		return
+	}
+
 	if err := s.Create(context.TODO(), namespace, obj); err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		s.Errorf(err.Error())
@@ -119,4 +129,16 @@ func (s Server) deleteEKSConsole(c *gin.Context) {
 	}
 	c.Handler()
 	c.JSON(http.StatusAccepted, "Object Deleted Successfully")
+}
+
+func (s Server) logNewObject(obj *unstructured.Unstructured, namespace string) error {
+	jsonObj, err := json.Marshal(obj)
+	if err != nil {
+		s.Logger.Error("error reading the new object using json marshal")
+		return err
+	}
+
+	s.logger.Infof("Request to create the object with %s data received in namespace: %s", jsonObj, namespace)
+
+	return nil
 }
